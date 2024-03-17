@@ -17,25 +17,36 @@ class IndexViewModel: ViewModel() {
     var height by mutableStateOf("")
     var weight by mutableStateOf("")
     fun updateAge(input: String) {
-        if (!input.contains(".") && !input.contains(",")) {
-            age = input
+        if (input.length <= 3) {
+            if (!input.contains(".") && !input.contains(",")) {
+                age = input
+            }
         }
+
     }
     fun updateHeight(input: String) {
-        if (!input.contains(".") && !input.contains(",")) {
-            height = input
+        if (input.length <= 6) {
+            if (!input.contains(".") && !input.contains(",")) {
+                height = input
+            }
         }
+
     }
     fun updateWeight(input: String) {
-        if (!input.contains(",")) {
-            weight = input
+        if (input.length <= 6) {
+            if (!input.contains(",")) {
+                if (input.count { it == '.' } <= 1) {
+                    weight = input
+                }
+            }
         }
+
     }
     fun updateGender(isMale: Boolean) {
         this.isMale = isMale
     }
     fun saveStates() {
         _uiState.update { current -> current
-            .copy(age = age.toInt(), isMale = isMale, height = height.toDouble(), weight = weight.toDouble()) }
+            .copy(age = age.toInt(), isMale = isMale, height = height.toInt() / 100.0, weight = weight.toDouble()) }
     }
 }

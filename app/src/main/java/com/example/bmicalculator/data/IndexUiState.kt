@@ -12,5 +12,5 @@ data class IndexUiState(
         get() = (weight / (height * height) * 100).roundToInt() / 100.0
 
     val suggestedWeight: String
-        get() = "${18.5 * (height * height)} ~ ${25 * (height * height)}"
+        get() = "${((18.5 * (height * height)) * 10).roundToInt() /10.0} ~ ${((25 * (height * height)) * 10).roundToInt() /10.0}"
 }

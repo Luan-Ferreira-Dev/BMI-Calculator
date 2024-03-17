@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Man
 import androidx.compose.material.icons.filled.Woman
@@ -26,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,14 +40,14 @@ import com.example.bmicalculator.ui.theme.BMICalculatorTheme
 import com.example.bmicalculator.ui.theme.Shapes
 
 @Composable
-fun StartScreen(modifier: Modifier = Modifier, indexViewModel: IndexViewModel) {
+fun StartScreen(modifier: Modifier = Modifier, indexViewModel: IndexViewModel, onCalculateClick: () -> Unit) {
     val fontSize = 12.sp
     val fontColor = MaterialTheme.colorScheme.secondary
     Column (
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)){
-        Text(text = "BMI", fontWeight = FontWeight.Bold)
+        Text(text = stringResource(id = R.string.app_name), fontWeight = FontWeight.Bold)
         Divider(thickness = 2.dp)
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -53,7 +57,11 @@ fun StartScreen(modifier: Modifier = Modifier, indexViewModel: IndexViewModel) {
                 label = R.string.age_label,
                 placeholder = R.string.age_placeholder,
                 value = indexViewModel.age,
-                onValueChange = {indexViewModel.updateAge(it)})
+                onValueChange = {indexViewModel.updateAge(it)},
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ))
 
             Column (horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center){
                 Text(
@@ -84,19 +92,29 @@ fun StartScreen(modifier: Modifier = Modifier, indexViewModel: IndexViewModel) {
             label = R.string.height_label,
             placeholder = R.string.height_placeholder,
             value = indexViewModel.height,
-            onValueChange = {indexViewModel.updateHeight(it)})
+            onValueChange = {indexViewModel.updateHeight(it)},
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ))
         InputInfo(
             label = R.string.weight_label,
             placeholder = R.string.weight_placeholder,
             value = indexViewModel.weight,
-            onValueChange = {indexViewModel.updateWeight(it)})
+            onValueChange = {indexViewModel.updateWeight(it)},
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            onDone = onCalculateClick)
 
         Column {
             Text(text = stringResource(
                 id = R.string.about),
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
-                color = fontColor)
+                color = fontColor,
+                modifier = Modifier.padding(top = 16.dp))
             Text(text = stringResource(
                 id = R.string.description),
                 fontSize = fontSize,
@@ -114,19 +132,25 @@ fun StartScreen(modifier: Modifier = Modifier, indexViewModel: IndexViewModel) {
 
 
         Spacer(modifier = Modifier.weight(1f))
-        Button(onClick = {  }, shape = Shapes.medium, modifier = Modifier.fillMaxWidth(0.7f)) {
-            Text("Calculate")
+        Button(onClick = { onCalculateClick() }, shape = Shapes.medium, modifier = Modifier.fillMaxWidth(0.7f)) {
+            Text(stringResource(id = R.string.calculate))
         }
     }
 }
 
 @Composable
-fun GenreButton(modifier: Modifier = Modifier, isMale: Boolean, man: Boolean, imageVector: ImageVector, onClick: () -> Unit) {
+fun GenreButton(
+    modifier: Modifier = Modifier,
+    isMale: Boolean,
+    man: Boolean,
+    imageVector: ImageVector,
+    onClick: () -> Unit) {
     var color = MaterialTheme.colorScheme.secondary
     if (isMale == man) {
         color = MaterialTheme.colorScheme.primary
     }
-    Surface ( shadowElevation = 2.dp, shape = Shapes.small, modifier = modifier.clickable { onClick() }
+    Surface ( shadowElevation = 2.dp, shape = Shapes.small, modifier = modifier
+        .clickable { onClick() }
         .padding(2.dp)){
         Icon(
             imageVector = imageVector,
@@ -142,13 +166,17 @@ fun InputInfo(
     @StringRes label: Int,
     @StringRes placeholder: Int,
     value: String,
-    onValueChange: (String) -> Unit) {
+    keyboardOptions: KeyboardOptions,
+    onValueChange: (String) -> Unit,
+    onDone: () -> Unit = {}) {
 
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
-        placeholder = {Text(stringResource(id = placeholder))},
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(onDone = {onDone()}),
+        placeholder = {Text(stringResource(id = placeholder), color = MaterialTheme.colorScheme.secondary)},
         label = { Text(stringResource(id = label)) }
     )
 }
@@ -160,7 +188,7 @@ fun StartScreenPreview() {
         Surface (
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background){
-            StartScreen(modifier = Modifier.padding(16.dp), indexViewModel = viewModel())
+            StartScreen(modifier = Modifier.padding(16.dp), indexViewModel = viewModel(), onCalculateClick = {})
         }
     }
 }
