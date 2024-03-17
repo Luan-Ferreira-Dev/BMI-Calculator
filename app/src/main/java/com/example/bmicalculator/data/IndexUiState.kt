@@ -3,10 +3,10 @@ package com.example.bmicalculator.data
 import kotlin.math.roundToInt
 
 data class IndexUiState(
-    val age: Int,
-    val isMale: Boolean,
-    val height: Double,
-    val weight: Double) {
+    val age: Int = 0,
+    val isMale: Boolean = true,
+    val height: Double = 0.0,
+    val weight: Double = 0.0) {
 
     val bodyMassIndex: Double
         get() = (weight / (height * height) * 100).roundToInt() / 100.0
