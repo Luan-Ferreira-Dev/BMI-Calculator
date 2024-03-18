@@ -45,8 +45,14 @@ class IndexViewModel: ViewModel() {
     fun updateGender(isMale: Boolean) {
         this.isMale = isMale
     }
-    fun saveStates() {
-        _uiState.update { current -> current
-            .copy(age = age.toInt(), isMale = isMale, height = height.toInt() / 100.0, weight = weight.toDouble()) }
+    fun saveStates(callback: () -> Unit) {
+        if(age != "" && height != "" && weight != "") {
+            _uiState.update { current -> current
+                .copy(age = age.toInt(),
+                    isMale = isMale,
+                    height = height.toInt() / 100.0,
+                    weight = weight.toDouble()) }
+            callback()
+        }
     }
 }

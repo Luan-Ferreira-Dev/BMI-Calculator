@@ -22,8 +22,7 @@ fun BodyMassIndexApp (viewModel: IndexViewModel = viewModel(),
         startDestination = "start") {
         composable(route = "start") {
             StartScreen(indexViewModel = viewModel, modifier = Modifier.padding(16.dp)) {
-                if (uiState.weight != 0.0) {
-                    viewModel.saveStates()
+                viewModel.saveStates() {
                     navController.navigate("IndexScreen")
                 }
             }
